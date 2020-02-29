@@ -2,7 +2,7 @@
 module.exports = {
     networks: {
         development: {
-            host:       "localhost",
+            host:       "127.0.0.1",
             port:       7545,
             network_id: "*",         // Match any network id
             gasPrice:   20000000000, // Gas price used for deploys
@@ -21,7 +21,14 @@ module.exports = {
             network_id: "*",             // Match any network id
             gasPrice:   0x1,             // Gas price used for deploys
             gas:        0x1fffffffffffff // Gas limit used for deploys
-        }
+        },
+	grassroots: {     // See <https://www.npmjs.com/package/solidity-coverage#network-configuration>
+            host:       "localhost",
+            port:       7545,            // Also in .solcover.js
+            network_id: "*",             // Match any network id
+            gasPrice:   0x1,             // Gas price used for deploys
+            gas:        6721975,
+        },
     },
     mocha: {
         enableTimeouts: false,
@@ -34,5 +41,10 @@ module.exports = {
             enabled: true,
             runs:    200
         }
+    },
+    compilers: {
+	solc: {
+		version: "0.4.26"
+	}
     }
 };
