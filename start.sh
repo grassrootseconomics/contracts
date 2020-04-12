@@ -14,6 +14,6 @@ else
 	if [ ! -d node_modules ]; then
 		npm install
 	fi
-	alias truffle=$d/node_modules/truffle/build/cli.bundled.js
 fi
+alias truffle=$d/node_modules/truffle/build/cli.bundled.js
 popd

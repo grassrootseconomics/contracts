@@ -14,9 +14,9 @@ let Whitelist = artifacts.require('Whitelist');
 
 let w3 = require('web3');
 
-let amount_initial_reserve = '10000000000000000000000';
-let amount_initial_reserve_token = 1000000000000000000000;
-let reserve_multiplier = 4; //4000000000000000000000;
+let amount_initial_reserve = 10000000000000000000000;
+let amount_initial_reserve_token = amount_initial_reserve / 100;
+let reserve_multiplier = 4;
 let reserve_ratio = 1000000 / reserve_multiplier;
 let amount_initial_minted_token = amount_initial_reserve_token * reserve_multiplier;
 
@@ -60,9 +60,10 @@ module.exports = async function(deployer, network, accounts) {
 		await converterNetworkPathFinder.setAnchorToken(etherToken.address)
 	
 		console.log('network', network);
-		if (network == 'development') {
+		if (network.indexOf('development') > -1) {
 			let smartToken = await deployer.deploy(SmartToken, 'SARAFU', 'SFU', 18);
 
+			console.log(etherToken.address, reserve_ratio);
 			let converterAddress = await converterFactory.createConverter(smartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
 			let converter = await BancorConverter.at(converterAddress.logs[0].args._converter);
 			await converter.acceptOwnership();
