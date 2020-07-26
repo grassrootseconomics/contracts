@@ -14,7 +14,7 @@ let Whitelist = artifacts.require('Whitelist');
 
 let w3 = require('web3');
 
-let amount_initial_reserve = 10000000000000000000000;
+let amount_initial_reserve = 1000000000000000000000;
 let amount_initial_reserve_token = amount_initial_reserve / 100;
 let reserve_multiplier = 4;
 let reserve_ratio = 1000000 / reserve_multiplier;
