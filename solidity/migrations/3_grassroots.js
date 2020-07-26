@@ -14,7 +14,7 @@ let Whitelist = artifacts.require('Whitelist');
 
 let w3 = require('web3');
 
-let amount_initial_reserve = 1000000000000000000000;
+let amount_initial_reserve = 10000000000000000000;
 let amount_initial_reserve_token = amount_initial_reserve / 100;
 let reserve_multiplier = 4;
 let reserve_ratio = 1000000 / reserve_multiplier;
@@ -79,7 +79,7 @@ module.exports = async function(deployer, network, accounts) {
 			let schmartToken = await deployer.deploy(SmartToken, 'SCHMARAFU', 'XSFU', 18);
 			let schonverterAddress = await converterFactory.createConverter(schmartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
 			console.log('smarttoken XSFU', schmartToken.address, schonverterAddress);
-			let schonverter = await BancorConverter.at(schconverterAddress.logs[0].args._converter);
+			let schonverter = await BancorConverter.at(schonverterAddress.logs[0].args._converter);
 			await schonverter.acceptOwnership();
 			await etherToken.transfer(schonverter.address, amount_initial_reserve_token);
 			await schmartToken.issue(accounts[1], amount_initial_minted_token);
