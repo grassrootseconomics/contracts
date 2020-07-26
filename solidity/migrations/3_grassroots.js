@@ -66,6 +66,7 @@ module.exports = async function(deployer, network, accounts) {
 
 			let smartToken = await deployer.deploy(SmartToken, 'SARAFU', 'SFU', 18);
 			let converterAddress = await converterFactory.createConverter(smartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
+			console.log('smarttoken SFU', smartToken.address, converterAddress);
 			let converter = await BancorConverter.at(converterAddress.logs[0].args._converter);
 			await converter.acceptOwnership();
 			await etherToken.transfer(converter.address, amount_initial_reserve_token);
@@ -77,6 +78,7 @@ module.exports = async function(deployer, network, accounts) {
 
 			let schmartToken = await deployer.deploy(SmartToken, 'SCHMARAFU', 'XSFU', 18);
 			let schonverterAddress = await converterFactory.createConverter(schmartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
+			console.log('smarttoken XSFU', schmartToken.address, schonverterAddress);
 			let schonverter = await BancorConverter.at(schconverterAddress.logs[0].args._converter);
 			await schonverter.acceptOwnership();
 			await etherToken.transfer(schonverter.address, amount_initial_reserve_token);
