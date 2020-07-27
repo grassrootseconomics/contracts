@@ -20,6 +20,8 @@ let reserve_multiplier = 4;
 let reserve_ratio = 1000000 / reserve_multiplier;
 let amount_initial_minted_token = amount_initial_reserve_token * reserve_multiplier;
 
+let fs = require('fs');
+
 module.exports = async function(deployer, network, accounts) {
 	deployer.then(async () => {
 		// deploy all necessary contracts
@@ -59,8 +61,9 @@ module.exports = async function(deployer, network, accounts) {
 
 		await converterNetworkPathFinder.setAnchorToken(etherToken.address)
 	
-		console.log('network', network);
+		//console.log('network', network);
 		if (network.indexOf('development') > -1) {
+			let tokens = [];
 			let tx = await web3.eth.sendTransaction({from: accounts[0], to: etherToken.address, value: amount_initial_reserve});
 			//console.log(etherToken.address, reserve_ratio);
 
@@ -68,6 +71,11 @@ module.exports = async function(deployer, network, accounts) {
 			let converterAddress = await converterFactory.createConverter(smartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
 			let converter = await BancorConverter.at(converterAddress.logs[0].args._converter);
 			console.log('smarttoken SFU', smartToken.address, converter.address);
+			tokens.push({
+				'symbol': 'SFU',
+				'token_address': smartToken.address,
+				'converter_address': converter.address,
+			});
 			await converter.acceptOwnership();
 			await etherToken.transfer(converter.address, amount_initial_reserve_token);
 			await smartToken.issue(accounts[0], amount_initial_minted_token);
@@ -80,12 +88,19 @@ module.exports = async function(deployer, network, accounts) {
 			let schonverterAddress = await converterFactory.createConverter(schmartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
 			let schonverter = await BancorConverter.at(schonverterAddress.logs[0].args._converter);
 			console.log('smarttoken XSFU', schmartToken.address, schonverter.address);
+			tokens.push({
+				'symbol': 'XSFU',
+				'token_address': schmartToken.address,
+				'converter_address': schonverter.address,
+			});
 			await schonverter.acceptOwnership();
 			await etherToken.transfer(schonverter.address, amount_initial_reserve_token);
 			await schmartToken.issue(accounts[1], amount_initial_minted_token);
 			await schmartToken.transferOwnership(schonverter.address);
 			let scht = await schonverter.acceptTokenOwnership();
 			let schr = await converterRegistry.addConverter(schonverter.address);
+
+			fs.writeFileSync('tokens.json', JSON.stringify(tokens));
 		}
 
 	});
