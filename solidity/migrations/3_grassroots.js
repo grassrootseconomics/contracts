@@ -67,12 +67,12 @@ module.exports = async function(deployer, network, accounts) {
 			let tx = await web3.eth.sendTransaction({from: accounts[0], to: etherToken.address, value: amount_initial_reserve});
 			//console.log(etherToken.address, reserve_ratio);
 
-			let smartToken = await deployer.deploy(SmartToken, 'SARAFU', 'SFU', 18);
+			let smartToken = await deployer.deploy(SmartToken, 'Bert Token', 'BRT', 18);
 			let converterAddress = await converterFactory.createConverter(smartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
 			let converter = await BancorConverter.at(converterAddress.logs[0].args._converter);
-			console.log('smarttoken SFU', smartToken.address, converter.address);
+			console.log('smarttoken BRT', smartToken.address, converter.address);
 			tokens.push({
-				'symbol': 'SFU',
+				'symbol': 'BRT',
 				'token_address': smartToken.address,
 				'converter_address': converter.address,
 			});
@@ -84,12 +84,12 @@ module.exports = async function(deployer, network, accounts) {
 			let r = await converterRegistry.addConverter(converter.address);
 
 
-			let schmartToken = await deployer.deploy(SmartToken, 'SCHMARAFU', 'XSFU', 18);
+			let schmartToken = await deployer.deploy(SmartToken, 'Ernie Token', 'RNI', 18);
 			let schonverterAddress = await converterFactory.createConverter(schmartToken.address, registry.address, 0, etherToken.address, reserve_ratio);
 			let schonverter = await BancorConverter.at(schonverterAddress.logs[0].args._converter);
 			console.log('smarttoken XSFU', schmartToken.address, schonverter.address);
 			tokens.push({
-				'symbol': 'XSFU',
+				'symbol': 'RNI',
 				'token_address': schmartToken.address,
 				'converter_address': schonverter.address,
 			});
