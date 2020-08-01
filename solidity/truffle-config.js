@@ -13,6 +13,13 @@ module.exports = {
 		gasPrice: 1000000000,
 		gas: 5000000
     	},
+	bloxberg_development: {
+      		provider: () => 
+        		new HDWalletProvider(mnemonic, 'https://blockexplorer.bloxberg.org/api/eth_rpc'),
+      		network_id: '8995', 
+		gasPrice: 1000000000,
+		gas: 8000000
+    	},
 
         development: {
             host:       "127.0.0.1",
