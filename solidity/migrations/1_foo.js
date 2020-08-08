@@ -5,6 +5,7 @@ let BancorConverterFactory = artifacts.require('ConverterFactory');
 let BancorConverterRegistry = artifacts.require('ConverterRegistry');
 let BancorConverterRegistryData = artifacts.require('ConverterRegistryData');
 let BancorFormula = artifacts.require('BancorFormula');
+let EtherToken = artifacts.require('EtherToken');
 
 let w3 = require('web3');
 
@@ -14,6 +15,7 @@ module.exports = function(deployer, network, accounts) {
 		let registry = await deployer.deploy(ContractRegistry);
 		console.debug('registry', registry);
 		deployer.link(ContractRegistry, [BancorConverterRegistry, BancorConverterRegistryData]);
+		let etherToken = await deployer.deploy(EtherToken, "Reserve Token", "RSV");
 		let converterRegistry = await deployer.deploy(BancorConverterRegistry, registry.address);
 		let converterRegistryData = await deployer.deploy(BancorConverterRegistryData, registry.address);
 		let converterNetwork = await deployer.deploy(BancorNetwork, registry.address);
@@ -37,6 +39,7 @@ module.exports = function(deployer, network, accounts) {
 		await registry.registerAddress(name, converterNetworkPathFinder.address);
 		name = w3.utils.asciiToHex('BancorFormula')
 		await registry.registerAddress(name, formula.address);
-
+		name = w3.utils.asciiToHex('BNTToken')
+		address = await registry.registerAddress(name, etherToken.address);
 	});
 }
