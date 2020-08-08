@@ -18,9 +18,9 @@ const mnemonic = fs.readFileSync('../compromised_mnemonic.txt', {
 });
 
 module.exports = {
-    contracts_directory: './solidity',
-    contracts_build_directory: './solidity/build/contracts',
-    test_directory: './solidity/test',
+	//    contracts_directory: './solidity',
+    //contracts_build_directory: './solidity/build/contracts',
+    //test_directory: './solidity/test',
     networks: {
         development: {
             host: 'localhost',
