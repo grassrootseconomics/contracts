@@ -1,6 +1,9 @@
+const fs = require('fs');
+
 const LiquidTokenConverterFactory = artifacts.require('LiquidTokenConverterFactory');
 const LiquidTokenConverter = artifacts.require('LiquidTokenConverter');
 const ConverterRegistry = artifacts.require('ConverterRegistry');
+const ContractRegistry = artifacts.require('ContractRegistry');
 const BancorConverterFactory = artifacts.require('ConverterFactory');
 const EtherToken = artifacts.require('EtherToken');
 const ERC20Token = artifacts.require('ERC20Token');
@@ -10,13 +13,15 @@ const BancorNetwork = artifacts.require('BancorNetwork');
 const amount_brt_reserve = 1000000000000000000;
 const amount_rni_reserve = 2000000000000000000;
 
+let token_output = {}
+
 module.exports = function(deployer, network, accounts) {
-	console.debug('bar');
 	deployer.then(async() => {
 		const converterFactory = await BancorConverterFactory.deployed();
 		const converterRegistry = await ConverterRegistry.deployed();
 		const etherToken = await EtherToken.deployed();
 		const bancorNetwork = await BancorNetwork.deployed();
+		const contractRegistry = await ContractRegistry.deployed();
 
 		const liquidFactory = await deployer.deploy(LiquidTokenConverterFactory);
 		let r = await converterFactory.registerTypedConverterFactory(liquidFactory.address);
@@ -92,12 +97,57 @@ module.exports = function(deployer, network, accounts) {
 			bertToken.address,
 		],
 			300000,
-			250000, {
+			300000, {
 			from: accounts[2],
 		});
-		console.debug('reserves', await bertConverter.reserveTokenCount());
-		console.debug('bert converter', cs[0], await bertConverter.owner(), await bertConverter.reserveBalance(etherToken.address));
-		
-		console.debug('bert token', as[0], await bertToken.symbol(), await bertToken.owner(), await bertToken.totalSupply(), await bertToken.balanceOf(accounts[2]));
+
+		// expect balance 1:4 but 0.6.8 always does initial supply 1:1 to reserve.
+		// we need to wait for next version
+		reserve_balance = await bertConverter.reserveBalance(etherToken.address);
+		reserve_weight = await bertConverter.reserveWeight(etherToken.address);
+		console.debug('bert converter', cs[0], await bertConverter.owner(), reserve_balance.toString(), reserve_weight.toString());
+	
+		supply = await bertToken.totalSupply();
+		balance = await bertToken.balanceOf(accounts[2])
+		console.debug('bert token', as[0], await bertToken.symbol(), await bertToken.owner(), supply.toNumber(), balance.toNumber());
+		reserve_balance_bert = await reserveToken.balanceOf(accounts[2]);
+		reserve_balance_ernie = await reserveToken.balanceOf(accounts[3]);
+		console.debug('reserves', reserve_balance_bert.toString(), reserve_balance_ernie.toString());
+
+		token_output = {
+			registry: {
+				address: contractRegistry.address,
+				deployer: accounts[0],
+			},
+			reserve: {
+				name: await reserveToken.name(),
+				symbol: await reserveToken.symbol(),
+				decimals: await reserveToken.decimals(),
+				address: await reserveToken.address,
+				deployer: accounts[1],
+			},
+			tokens: [
+				{
+					converter: await bertConverter.address,
+					weight: 250000,
+					name: await bertToken.name(),
+					symbol: await bertToken.symbol(),
+					decimals: await bertToken.decimals(),
+					address: await bertToken.address,
+					deployer: accounts[2],
+				},
+				{
+					converter: await ernieConverter.address,
+					weight: 250000,
+					name: await ernieToken.name(),
+					symbol: await ernieToken.symbol(),
+					decimals: await ernieToken.decimals(),
+					address: await ernieToken.address,
+					deployer: accounts[3],
+				},
+			],
+		};
+
+		fs.writeFileSync('tokens.json', JSON.stringify(token_output));
 	});
 };

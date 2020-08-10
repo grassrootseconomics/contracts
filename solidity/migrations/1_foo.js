@@ -14,7 +14,9 @@ module.exports = function(deployer, network, accounts) {
 	deployer.then(async () => {
 		let registry = await deployer.deploy(ContractRegistry);
 		deployer.link(ContractRegistry, [BancorConverterRegistry, BancorConverterRegistryData]);
-		let etherToken = await deployer.deploy(EtherToken, "Reserve Token", "RSV");
+		let etherToken = await deployer.deploy(EtherToken, "Reserve Token", "RSV", {
+			from: accounts[1],
+		});
 		let converterRegistry = await deployer.deploy(BancorConverterRegistry, registry.address);
 		let converterRegistryData = await deployer.deploy(BancorConverterRegistryData, registry.address);
 		let converterNetwork = await deployer.deploy(BancorNetwork, registry.address);

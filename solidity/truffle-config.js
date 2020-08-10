@@ -18,11 +18,8 @@ const mnemonic = fs.readFileSync('../compromised_mnemonic.txt', {
 });
 
 module.exports = {
-	//    contracts_directory: './solidity',
-    //contracts_build_directory: './solidity/build/contracts',
-    //test_directory: './solidity/test',
     networks: {
-        development: {
+        test: {
             host: 'localhost',
             port: 7545,
             network_id: '*',
@@ -34,12 +31,12 @@ module.exports = {
                 default_balance_ether: 10000000000000000000
             })
         },
-        production: {
-            host: 'localhost',
-            port: 7545,
-            network_id: '*',
-            gasPrice: 20000000000,
-            gas: 9500000
+	bloxberg: {
+            host: 'https://blockexplorer.bloxberg.org/api/eth_rpc',
+            port: 443,
+      	    network_id: '8995', 
+            gasPrice: 1000000000,
+            gas: 8000000
         }
 	    ,
 	bloxberg_development: {
