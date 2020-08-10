@@ -31,14 +31,20 @@ module.exports = {
                 default_balance_ether: 10000000000000000000
             })
         },
+	development: {
+      	    provider: () => 
+        	new HDWalletProvider(mnemonic, 'http://localhost:8545'),
+	    network_id: '8995',
+            gasPrice: 1000000000,
+            gas: 8000000
+	},
 	bloxberg: {
             host: 'https://blockexplorer.bloxberg.org/api/eth_rpc',
             port: 443,
       	    network_id: '8995', 
             gasPrice: 1000000000,
             gas: 8000000
-        }
-	    ,
+        },
 	bloxberg_development: {
       		provider: () => 
         		new HDWalletProvider(mnemonic, 'https://blockexplorer.bloxberg.org/api/eth_rpc'),
